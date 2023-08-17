@@ -100,4 +100,7 @@ interface IBridgeBase {
      * @param newBridgeAddress The address of the new bridge contract
      */
     function setCrossBridgeContract(string calldata newBridgeAddress) external;
+
+    /// @notice claim bridge fees callable by owner 
+    function claimFees() external;
 }

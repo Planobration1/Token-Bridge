@@ -1,25 +1,47 @@
 import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import { tronWeb } from "./utils";
 import bridgeAbi from "./abi/bridge.json";
-import erc20Abi from "./abi/erc20.json";
 import { testConfig } from "./config";
 
 function bscContract() {
   const bsc = testConfig.bsc;
-  const { rpc, token, bridge, privateKey } = bsc;
+  const { rpc, bridge, privateKey } = bsc;
   const provider = new JsonRpcProvider(rpc);
   const wallet = new Wallet(privateKey, provider);
   const bridgeContract = new Contract(bridge, bridgeAbi, wallet);
-  const tokenContract = new Contract(token, erc20Abi, wallet);
-  return { bridgeContract, tokenContract };
+  return { bridgeContract };
 }
 
 function tronContract() {
   const tron = testConfig.trx;
-  const { token, bridge, privateKey } = tron;
+  const { bridge, privateKey } = tron;
   const bridgeContract = tronWeb.contract(bridgeAbi, bridge);
-  const tokenContract = tronWeb.contract(erc20Abi, token);
-  return { bridgeContract, tokenContract };
+  return { bridgeContract };
 }
 
-async function main() {}
+async function bridgeToTrc(from, to, value) {
+  const { bridgeContract: trcBridge } = tronContract();
+  const { bridgeContract: bscBridge } = bscContract();
+  const trc_tx = await trcBridge.withdraw(from, to, value).send();
+  if (trc_tx) {
+    await bscBridge.burn(from, value);
+  }
+}
+async function bridgeToBsc(from, to, value) {
+  const { bridgeContract: trcBridge } = tronContract();
+  const { bridgeContract: bscBridge } = bscContract();
+  const bsc_tx = await bscBridge.withdraw(from, to, value);
+  if (bsc_tx) {
+    await trcBridge.burn(from, value).send();
+  }
+}
+
+async function main() {
+  const { bridgeContract: bscBridge } = bscContract();
+  const { bridgeContract: trcBridge } = tronContract();
+  const bscFilter = bscBridge.filters["Deposit"]();
+  bscBridge.on(bscFilter, await bridgeToTrc(from, to, value));
+  const trcFilter = trcBridge.filters["Deposit"]();
+  trcBridge.on(trcFilter, await bridgeToBsc(from, to, value));
+}
+await main().catch((e) => console.log(e));

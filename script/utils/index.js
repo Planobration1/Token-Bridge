@@ -8,10 +8,11 @@ const chain = Config.chain;
 const DATA_LEN = 64;
 export const MAX_UINT256 =
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-const privateKey = chain.privateKey;
+const { privateKey, trongrid_key, fullHost } = chain;
 
 const mainchain = new TronWeb({
-  fullHost: chain.fullHost,
+  fullHost: fullHost,
+  headers: { "TRON-PRO-API-KEY": trongrid_key },
   privateKey,
 });
 export { mainchain as tronWeb };

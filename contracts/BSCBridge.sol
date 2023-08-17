@@ -19,6 +19,7 @@ contract Bridge is IBridgeBase {
     string private _crossBridgeAddress;
     uint256 private _bridgeFee;
     uint256 private _minDepositAmount;
+    uint256 private _generatedFees;
     bool private _paused;
 
     mapping(address => uint256) private userDeposit;
@@ -51,13 +52,17 @@ contract Bridge is IBridgeBase {
     }
 
     /// @inheritdoc IBridgeBase
-    function deposit(string calldata to, uint256 amount) external notPaused {
+    function deposit(
+        string calldata to,
+        uint256 amount
+    ) external override notPaused {
         require(amount > _minDepositAmount, "Bridge: amount too small");
         require(
             AddressLengthLib.isAddressLengthEqualTo(to, 34),
             "Bridge: to address length must be 34"
         );
         uint _amount = amount - _bridgeFee;
+        _generatedFees += _amount;
         _token.safeTransferFrom(msg.sender, address(this), amount);
         userDeposit[msg.sender] += amount;
         emit Deposit(msg.sender, to, _amount);
@@ -68,7 +73,7 @@ contract Bridge is IBridgeBase {
         string calldata from,
         address to,
         uint256 amount
-    ) external onlyWhitelist notPaused {
+    ) external override onlyWhitelist notPaused {
         require(amount > 0, "Bridge: amount must be greater than 0");
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
@@ -80,7 +85,7 @@ contract Bridge is IBridgeBase {
     function burn(
         address from,
         uint256 amount
-    ) external onlyWhitelist notPaused {
+    ) external override onlyWhitelist notPaused {
         require(amount > 0, "Bridge: amount must be greater than 0");
         require(userDeposit[from] == amount, "Bridge: incorrect balance");
         delete userDeposit[from];
@@ -88,7 +93,7 @@ contract Bridge is IBridgeBase {
     }
 
     /// @inheritdoc IBridgeBase
-    function bridgeBalance() public view returns (uint256) {
+    function bridgeBalance() public view override returns (uint256) {
         uint balance = _token.balanceOf(address(this));
         return balance;
     }
@@ -96,7 +101,7 @@ contract Bridge is IBridgeBase {
     /// @inheritdoc IBridgeBase
     function getDepositStatus(
         address from
-    ) public view returns (bool hasPendingDeposit) {
+    ) public view override returns (bool hasPendingDeposit) {
         return userDeposit[from] > 0;
     }
 
@@ -104,6 +109,7 @@ contract Bridge is IBridgeBase {
     function getBridgeInfo()
         external
         view
+        override
         returns (
             string memory crossBridgeAddress,
             uint256 minDepositAmount,
@@ -118,7 +124,7 @@ contract Bridge is IBridgeBase {
     }
 
     /// @inheritdoc IBridgeBase
-    function cancelPendingDeposit() external {
+    function cancelPendingDeposit() external override {
         uint256 amount = userDeposit[msg.sender];
         require(getDepositStatus(msg.sender), "Bridge: no pending deposit");
         delete userDeposit[msg.sender];
@@ -126,24 +132,43 @@ contract Bridge is IBridgeBase {
     }
 
     /// @inheritdoc IBridgeBase
-    function setMinDepositAmount(uint256 amount) external onlyBridgeAdmin {
+    function setMinDepositAmount(
+        uint256 amount
+    ) external override onlyBridgeAdmin {
+        require(amount > 0, "Bridge: amount must be greater than 0");
         _minDepositAmount = amount;
     }
 
     /// @inheritdoc IBridgeBase
-    function setBridgeFees(uint256 amount) external onlyBridgeAdmin {
-        _bridgeFee = amount;
+    function setBridgeFees(uint256 fee) external override onlyBridgeAdmin {
+        require(fee > 0, "Bridge: fee must be greater than 0");
+        _bridgeFee = fee;
     }
 
     /// @inheritdoc IBridgeBase
-    function emergencyPause(bool paused) external onlyBridgeAdmin {
+    function emergencyPause(bool paused) external override onlyBridgeAdmin {
         _paused = paused;
     }
 
     /// @inheritdoc IBridgeBase
     function setCrossBridgeContract(
         string calldata newBridgeAddress
-    ) external onlyBridgeAdmin {
+    ) external override onlyBridgeAdmin {
+        require(
+            AddressLengthLib.isAddressLengthEqualTo(newBridgeAddress, 34),
+            "Bridge: to address length must be 34"
+        );
         _crossBridgeAddress = newBridgeAddress;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function claimFees() external override onlyBridgeAdmin {
+        require(
+            _generatedFees > 0,
+            "Bridge: generated fees must be greater than 0"
+        );
+        uint generatedFees = _generatedFees;
+        _generatedFees = 0;
+        _token.safeTransfer(msg.sender, generatedFees);
     }
 }

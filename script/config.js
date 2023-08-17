@@ -6,6 +6,7 @@ const Config = {
     privateKey:
       "38340f2f2cd40de7be48fd656d8a0e23aaf5722b6d0d9dcc8af12f9c5bbbac27",
     fullHost: "https://api.trongrid.io",
+    trongrid_key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
   },
   trongrid: {
     host: "https://api.trongrid.io",
