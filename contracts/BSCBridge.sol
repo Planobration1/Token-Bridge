@@ -9,7 +9,6 @@ pragma solidity ^0.8.0;
 import {IBridgeBase} from "./interface/IBridgeBase.sol";
 import {IERC20} from "./interface/IERC20.sol";
 import {GPv2SafeERC20} from "./interface/SafeERC20.sol";
-import {AddressLengthLib} from "./library/AddressLength.sol";
 
 contract Bridge is IBridgeBase {
     using GPv2SafeERC20 for IERC20;
@@ -58,7 +57,7 @@ contract Bridge is IBridgeBase {
     ) external override notPaused {
         require(amount >= _minDepositAmount, "Bridge: amount too small");
         require(
-            AddressLengthLib.isAddressLengthEqualTo(to, 34),
+            isAddressLengthEqualTo(to, 34),
             "Bridge: to address length must be 34"
         );
         uint _amount = amount - _bridgeFee;
@@ -155,7 +154,7 @@ contract Bridge is IBridgeBase {
         string calldata newBridgeAddress
     ) external override onlyBridgeAdmin {
         require(
-            AddressLengthLib.isAddressLengthEqualTo(newBridgeAddress, 34),
+            isAddressLengthEqualTo(newBridgeAddress, 34),
             "Bridge: to address length must be 34"
         );
         _crossBridgeAddress = newBridgeAddress;
