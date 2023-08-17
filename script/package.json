@@ -12,6 +12,7 @@
   "dependencies": {
     "@tronwidgets/transaction": "^1.0.0",
     "ethers": "^6.7.1",
+    "flatted": "^3.2.7",
     "tronweb": "^5.3.0"
   }
 }

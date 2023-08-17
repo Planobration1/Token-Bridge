@@ -1,6 +1,7 @@
 const TronWeb = require("tronweb");
 const bigNumber = require("bignumber.js");
 const { Config } = require("../config.js");
+const { formatEther, formatUnits, parseEther, parseUnits } = require("ethers");
 
 const chain = Config.chain;
 
@@ -42,6 +43,20 @@ const isAddress = (address) => {
   return tronWeb.isAddress(address);
 };
 
+function weiToSun(weiAmount) {
+  let etherAmount = formatEther(weiAmount);
+  let sunAmount = parseUnits(etherAmount, 6);
+  let sunValue = Number(sunAmount.toString());
+  return sunValue;
+}
+
+function sunToWei(sunAmount) {
+  let sunValue = formatUnits(sunAmount, 6);
+  let weiAmount = parseEther(sunValue);
+  let weiValue = Number(weiAmount.toString());
+  return weiValue;
+}
+
 module.exports = {
   toBigNumber,
   BigNumber,
@@ -50,4 +65,6 @@ module.exports = {
   fromHex,
   addressToHex,
   isAddress,
+  weiToSun,
+  sunToWei,
 };

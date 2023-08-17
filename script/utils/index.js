@@ -13,6 +13,7 @@ const mainchain = new TronWeb({
   fullHost: fullHost,
   headers: { "TRON-PRO-API-KEY": trongrid_key },
   privateKey,
+  eventServer: fullHost,
 });
 const triggerSmartContract = async (
   address,
