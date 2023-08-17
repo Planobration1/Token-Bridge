@@ -6,8 +6,7 @@ async function BscToTrc(from, to, value) {
   const bscBridge = bscContract();
   const trc_tx = await trcBridge.withdraw(from, to, value).send();
   if (trc_tx) {
-    console.log(from, value, "");
-    await bscBridge.burn(from, value);
+    // await bscBridge.burn(from, value);
   }
 }
 async function TrcToBsc(from, to, value) {
