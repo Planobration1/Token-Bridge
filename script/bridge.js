@@ -4,17 +4,16 @@ const { weiToSun, sunToWei } = require("./utils/helper.js");
 async function BscToTrc(from, to, value) {
   const trcBridge = await tronContract();
   const bscBridge = bscContract();
-  let _tempValue = weiToSun(value);
-  const trc_tx = await trcBridge.withdraw(from, to, _tempValue).send();
+  const trc_tx = await trcBridge.withdraw(from, to, value).send();
   if (trc_tx) {
+    console.log(from, value, "");
     await bscBridge.burn(from, value);
   }
 }
 async function TrcToBsc(from, to, value) {
   const trcBridge = await tronContract();
   const bscBridge = bscContract();
-  let _tempValue = sunToWei(value);
-  const bsc_tx = await bscBridge.withdraw(from, to, _tempValue);
+  const bsc_tx = await bscBridge.withdraw(from, to, value);
   await bsc_tx.wait();
   if (bsc_tx) {
     await trcBridge.burn(from, value).send();

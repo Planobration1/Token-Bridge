@@ -10,35 +10,7 @@ const Config = {
     // fullHost: "https://api.shasta.trongrid.io",
     trongrid_key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
   },
-  trongrid: {
-    host: "https://api.trongrid.io",
-    key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
-  },
-  service: {},
-  contract: {
-    usdt: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
-  },
-  defaultDecimal: 6,
-  tronLinkTime: 8,
-  justSwap: "https://justswap.org/",
-  tronscanUrl: "https://tronscan.io/#",
 };
-
-let devConfig = {};
-if (env === "test") {
-  devConfig = {
-    chain: {
-      privateKey: "01",
-      fullHost: "https://api.nileex.io",
-    },
-    service: {},
-    contract: {
-      usdt: "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
-    },
-    justSwap: "https://justswap.org/",
-    tronscanUrl: "https://nile.tronscan.io/#",
-  };
-}
 
 const account = {
   bsc: {
@@ -66,8 +38,8 @@ const testConfig = {
     wss: "wss://api.trongrid.io",
     key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
     ...account.trx,
-    token: "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
-    bridge: "TY3EpzY5tvufNJZ2Qdh6Ur79tijcfn6XWw",
+    token: "THfvs3htgGDbUXT1bKgbyncUy2rdxdDbu1",
+    bridge: "TGHrCcF13UbkNHMqKUgTUeitp85pSqFRim",
   },
 };
 
@@ -92,7 +64,6 @@ module.exports = {
   testConfig,
   prodConfig,
   Config,
-  devConfig,
 };
 
 // export default Object.assign(Config, devConfig);

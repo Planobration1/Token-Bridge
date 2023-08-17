@@ -1,21 +1,21 @@
-const { bscContract, tronContract } = require("./contracts.js");
+const { bscContract } = require("./contracts.js");
 const { TrcToBsc, BscToTrc } = require("./bridge.js");
+const { testConfig } = require("./config.js");
+const { tronWeb } = require("./utils/index.js");
 
 async function main() {
   console.log("Script start");
   const BSC = bscContract();
   const filter = BSC.filters["Deposit"]();
   BSC.on(filter, async (event) => {
-    console.log(event.args);
     const [from, to, value] = event.args;
+    console.log(from, to, value, "BSC Handler");
     await BscToTrc(from, to, value.toString());
   });
-  console.log("start");
   let currentBlock = 0;
   const contract = testConfig.trx.bridge;
   setInterval(async () => {
     try {
-      console.log("Loop started");
       const blockHex = await tronWeb.trx.getCurrentBlock();
       const block = blockHex.block_header.raw_data.number;
       if (currentBlock == block) return;
@@ -27,7 +27,8 @@ async function main() {
       });
       for (let event of events) {
         const { from, to, value } = event.result;
-        await TrcToBsc(from, to, value);
+        console.log(from, to, value, "Tron Handler");
+        await TrcToBsc(from, to, value.toString());
       }
     } catch (error) {
       console.log(error);
@@ -35,22 +36,3 @@ async function main() {
   }, 2000);
 }
 main().catch((e) => console.log(e));
-
-/*
-async function buildTx() {
-  const functionSelector = "transfer(address,uint256)";
-  const parameter = [
-    { type: "address", value: testConfig.trx.bridge },
-    { type: "uint256", value: 1000000 },
-  ];
-  const tx = await tronWeb.transactionBuilder.triggerSmartContract(
-    testConfig.trx.token,
-    functionSelector,
-    {},
-    parameter
-  );
-  const signedTx = await tronWeb.trx.sign(tx.transaction);
-  const result = await tronWeb.trx.sendRawTransaction(signedTx);
-  console.log(result.txid);
-}
-*/
