@@ -22,7 +22,7 @@ contract Bridge is IBridgeBase {
     uint256 private _generatedFees;
     bool private _paused;
 
-    mapping(address => uint256) private userDeposit;
+    mapping(address => uint256) public userDeposit;
     mapping(address => bool) private isWhitelist;
 
     constructor(address token_, address[] memory whitelist_) {
@@ -56,15 +56,15 @@ contract Bridge is IBridgeBase {
         string calldata to,
         uint256 amount
     ) external override notPaused {
-        require(amount > _minDepositAmount, "Bridge: amount too small");
+        require(amount >= _minDepositAmount, "Bridge: amount too small");
         require(
             AddressLengthLib.isAddressLengthEqualTo(to, 34),
             "Bridge: to address length must be 34"
         );
         uint _amount = amount - _bridgeFee;
-        _generatedFees += _amount;
+        _generatedFees += _bridgeFee;
         _token.safeTransferFrom(msg.sender, address(this), amount);
-        userDeposit[msg.sender] += amount;
+        userDeposit[msg.sender] += _amount;
         emit Deposit(msg.sender, to, _amount);
     }
 
@@ -78,7 +78,7 @@ contract Bridge is IBridgeBase {
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
         _token.safeTransfer(to, amount);
-        emit Withdraw(msg.sender, from, amount);
+        emit Withdraw(from, to, amount);
     }
 
     /// @inheritdoc IBridgeBase
@@ -87,8 +87,8 @@ contract Bridge is IBridgeBase {
         uint256 amount
     ) external override onlyWhitelist notPaused {
         require(amount > 0, "Bridge: amount must be greater than 0");
-        require(userDeposit[from] == amount, "Bridge: incorrect balance");
-        delete userDeposit[from];
+        require(getDepositStatus(from), "Bridge: incorrect balance");
+        userDeposit[from] -= amount;
         emit Burn(from, amount);
     }
 
@@ -114,19 +114,19 @@ contract Bridge is IBridgeBase {
             string memory crossBridgeAddress,
             uint256 minDepositAmount,
             uint256 bridgeFees,
-            bool bridgeState
+            bool bridgeClosed
         )
     {
         crossBridgeAddress = _crossBridgeAddress;
         minDepositAmount = _minDepositAmount;
         bridgeFees = _bridgeFee;
-        bridgeState = _paused;
+        bridgeClosed = _paused;
     }
 
     /// @inheritdoc IBridgeBase
     function cancelPendingDeposit() external override {
-        uint256 amount = userDeposit[msg.sender];
         require(getDepositStatus(msg.sender), "Bridge: no pending deposit");
+        uint256 amount = userDeposit[msg.sender];
         delete userDeposit[msg.sender];
         _token.safeTransfer(msg.sender, amount);
     }
@@ -170,5 +170,30 @@ contract Bridge is IBridgeBase {
         uint generatedFees = _generatedFees;
         _generatedFees = 0;
         _token.safeTransfer(msg.sender, generatedFees);
+    }
+
+    /// @inheritdoc IBridgeBase
+    function setBridgeAdmin(
+        address newBridgeAdmin
+    ) external override onlyBridgeAdmin {
+        require(
+            newBridgeAdmin != address(0),
+            "Bridge: new bridge admin is the zero address"
+        );
+        bridgeAdmin = newBridgeAdmin;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function addWhitelistedAddress(
+        address whitelist_
+    ) external override onlyBridgeAdmin {
+        isWhitelist[whitelist_] = true;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function removeWhitelistedAddress(
+        address whitelist_
+    ) external override onlyBridgeAdmin {
+        isWhitelist[whitelist_] = false;
     }
 }

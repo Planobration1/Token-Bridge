@@ -17,7 +17,7 @@ interface IBridgeBase {
     /// @dev event used to trigger the script to send x tokens on BSC to user
     /// @param to The address of the user who wants to withdraw
     /// @param value The amount of tokens to be withdrawn
-    event Withdraw(address indexed to, string from, uint256 value);
+    event Withdraw(string from, address indexed to, uint256 value);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -52,7 +52,7 @@ interface IBridgeBase {
     /// @return crossBridgeAddress of the contract on the cross chain,
     /// @return minDepositAmount The minimum deposit amount required for bridging
     /// @return bridgeFees The fee amount required for bridging
-    /// @return bridgeState The current state of the bridge
+    /// @return bridgeClosed The current state of the bridge
     function getBridgeInfo()
         external
         view
@@ -60,7 +60,7 @@ interface IBridgeBase {
             string memory crossBridgeAddress,
             uint256 minDepositAmount,
             uint256 bridgeFees,
-            bool bridgeState
+            bool bridgeClosed
         );
 
     /**
@@ -101,6 +101,15 @@ interface IBridgeBase {
      */
     function setCrossBridgeContract(string calldata newBridgeAddress) external;
 
-    /// @notice claim bridge fees callable by owner 
+    /// @notice claim bridge fees callable by owner
     function claimFees() external;
+
+    /// @notice set bridge admin callable by owner
+    function setBridgeAdmin(address newAdmin) external;
+
+    /// @notice add whitelisted address callable by owner
+    function addWhitelistedAddress(address whitelist_) external;
+
+    /// @notice remove whitelisted address callable by owner
+    function removeWhitelistedAddress(address whitelist_) external;
 }
