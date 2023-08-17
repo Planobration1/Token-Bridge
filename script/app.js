@@ -10,6 +10,29 @@ async function main() {
     const [from, to, value] = event.args;
     await BscToTrc(from, to, value.toString());
   });
+  console.log("start");
+  let currentBlock = 0;
+  const contract = testConfig.trx.bridge;
+  setInterval(async () => {
+    try {
+      console.log("Loop started");
+      const blockHex = await tronWeb.trx.getCurrentBlock();
+      const block = blockHex.block_header.raw_data.number;
+      if (currentBlock == block) return;
+      currentBlock = block;
+      const events = await tronWeb.getEventResult(contract, {
+        eventName: "Deposit",
+        onlyConfirmed: true,
+        blockNumber: block,
+      });
+      for (let event of events) {
+        const { from, to, value } = event.result;
+        await TrcToBsc(from, to, value);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, 2000);
 }
 main().catch((e) => console.log(e));
 
