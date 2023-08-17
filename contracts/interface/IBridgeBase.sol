@@ -112,4 +112,13 @@ interface IBridgeBase {
 
     /// @notice remove whitelisted address callable by owner
     function removeWhitelistedAddress(address whitelist_) external;
+
+    /// @dev Returns the length of an address in bytes
+    /// @param _str The address to get the length of
+    /// @param _length The length to check against
+    /// @return boolean value too confirm the address length
+    function isAddressLengthEqualTo(
+        string memory _str,
+        uint _length
+    ) external pure returns (bool);
 }

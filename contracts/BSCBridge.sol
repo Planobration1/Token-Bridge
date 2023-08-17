@@ -196,4 +196,13 @@ contract Bridge is IBridgeBase {
     ) external override onlyBridgeAdmin {
         isWhitelist[whitelist_] = false;
     }
+
+    /// @inheritdoc IBridgeBase
+    function isAddressLengthEqualTo(
+        string memory _str,
+        uint _length
+    ) public pure override returns (bool) {
+        bytes memory strBytes = bytes(_str);
+        return strBytes.length == _length;
+    }
 }

@@ -9,8 +9,5 @@ library AddressLengthLib {
     function isAddressLengthEqualTo(
         string memory _str,
         uint _length
-    ) public pure returns (bool) {
-        bytes memory strBytes = bytes(_str);
-        return strBytes.length == _length;
-    }
+    ) external pure returns (bool) {}
 }
