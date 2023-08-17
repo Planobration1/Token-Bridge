@@ -1,7 +1,8 @@
-import { Contract, JsonRpcProvider, Wallet } from "ethers";
-import { tronWeb } from "./utils";
-import bridgeAbi from "./abi/bridge.json";
-import { testConfig } from "./config";
+const { Contract, JsonRpcProvider, Wallet } = require("ethers");
+const { tronWeb } = require("./utils/index.js");
+const bridgeAbi = require("./abi/bridge.json");
+const tokenAbi = require("./abi/erc20.json");
+const { testConfig } = require("./config.js");
 
 function bscContract() {
   const bsc = testConfig.bsc;
@@ -11,12 +12,13 @@ function bscContract() {
   const bridgeContract = new Contract(bridge, bridgeAbi, wallet);
   return { bridgeContract };
 }
-
 function tronContract() {
   const tron = testConfig.trx;
-  const { bridge, privateKey } = tron;
-  const bridgeContract = tronWeb.contract(bridgeAbi, bridge);
-  return { bridgeContract };
+  const { bridge, privateKey, token } = tron;
+  // const bridgeContract = tronWeb.contract(bridgeAbi, bridge);
+  // bridgeContract.setPrivateKey(privateKey);
+  const tokenContract = tronWeb.contract(tokenAbi, token);
+  return { tokenContract };
 }
 
 async function bridgeToTrc(from, to, value) {
@@ -36,12 +38,36 @@ async function bridgeToBsc(from, to, value) {
   }
 }
 
-async function main() {
-  const { bridgeContract: bscBridge } = bscContract();
-  const { bridgeContract: trcBridge } = tronContract();
-  const bscFilter = bscBridge.filters["Deposit"]();
-  bscBridge.on(bscFilter, await bridgeToTrc(from, to, value));
-  const trcFilter = trcBridge.filters["Deposit"]();
-  trcBridge.on(trcFilter, await bridgeToBsc(from, to, value));
+async function buildTx() {
+  const functionSelector = "transfer(address,uint256)";
+  const parameter = [
+    { type: "address", value: "TVzPMfKckXBQ6gq3zQp5SbtMj4aqNb2Dw2" },
+    { type: "uint256", value: 100 },
+  ];
+  const tx = await tronWeb.transactionBuilder.triggerSmartContract(
+    "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
+    functionSelector,
+    {},
+    parameter
+  );
+  const signedTx = await tronWeb.trx.sign(tx.transaction);
+  const result = await tronWeb.trx.sendRawTransaction(signedTx);
+  console.log(result);
 }
-await main().catch((e) => console.log(e));
+
+async function main() {
+  // const { bridgeContract: bscBridge } = bscContract();
+  // await buildTx();
+  const tokenContract = await tronWeb.contract(tokenAbi, testConfig.trx.token);
+  const txID = await tokenContract
+    .transfer("TVzPMfKckXBQ6gq3zQp5SbtMj4aqNb2Dw2", "1000000")
+    .send();
+  let result = await tronWeb.trx.getTransaction(txID);
+  console.log(txID);
+  console.log(result);
+  // const bscFilter = bscBridge.filters["Deposit"]();
+  // bscBridge.on(bscFilter, await bridgeToTrc(from, to, value));
+  // const trcFilter = trcBridge.filters["Deposit"]();
+  // trcBridge.on(trcFilter, await bridgeToBsc(from, to, value));
+}
+main().catch((e) => console.log(e));

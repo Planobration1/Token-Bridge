@@ -1,12 +1,11 @@
-import TronWeb from "tronweb";
-import Config from "../config";
-
-import { BigNumber } from "./helper";
+const TronWeb = require("tronweb");
+const { Config } = require("../config");
+const { BigNumber } = require("./helper");
 
 const chain = Config.chain;
 
 const DATA_LEN = 64;
-export const MAX_UINT256 =
+const MAX_UINT256 =
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 const { privateKey, trongrid_key, fullHost } = chain;
 
@@ -15,8 +14,7 @@ const mainchain = new TronWeb({
   headers: { "TRON-PRO-API-KEY": trongrid_key },
   privateKey,
 });
-export { mainchain as tronWeb };
-export const triggerSmartContract = async (
+const triggerSmartContract = async (
   address,
   functionSelector,
   options = {},
@@ -42,7 +40,7 @@ export const triggerSmartContract = async (
   }
 };
 
-export const sign = async (transaction) => {
+const sign = async (transaction) => {
   try {
     const tronweb = window.tronWeb;
     const signedTransaction = await tronweb.trx.sign(transaction.transaction);
@@ -53,7 +51,7 @@ export const sign = async (transaction) => {
   }
 };
 
-export const sendRawTransaction = async (signedTransaction) => {
+const sendRawTransaction = async (signedTransaction) => {
   try {
     const tronweb = window.tronWeb;
     const result = await tronweb.trx.sendRawTransaction(signedTransaction);
@@ -63,7 +61,7 @@ export const sendRawTransaction = async (signedTransaction) => {
   }
 };
 
-export const view = async (
+const view = async (
   address,
   functionSelector,
   parameters = [],
@@ -90,7 +88,7 @@ export const view = async (
   }
 };
 
-export const getTrxBalance = async (address, isDappTronWeb = false) => {
+const getTrxBalance = async (address, isDappTronWeb = false) => {
   try {
     let tronWeb = mainchain;
     if (!isDappTronWeb && window.tronWeb && window.tronWeb.ready) {
@@ -110,7 +108,7 @@ export const getTrxBalance = async (address, isDappTronWeb = false) => {
   }
 };
 
-export const getTransactionInfo = (tx) => {
+const getTransactionInfo = (tx) => {
   const tronWeb = mainchain;
   return new Promise((resolve, reject) => {
     tronWeb.trx.getConfirmedTransaction(tx, (e, r) => {
@@ -123,7 +121,7 @@ export const getTransactionInfo = (tx) => {
   });
 };
 
-export const getTRC20Balance = async (tokenAddress, userAddress) => {
+const getTRC20Balance = async (tokenAddress, userAddress) => {
   console.log("params of getbalance: ", userAddress, tokenAddress);
   const result = await view(tokenAddress, "balanceOf(address)", [
     { type: "address", value: userAddress },
@@ -140,4 +138,7 @@ export const getTRC20Balance = async (tokenAddress, userAddress) => {
     value,
     success,
   };
+};
+module.exports = {
+  tronWeb: mainchain,
 };

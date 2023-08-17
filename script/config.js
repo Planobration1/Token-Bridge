@@ -5,7 +5,8 @@ const Config = {
   chain: {
     privateKey:
       "38340f2f2cd40de7be48fd656d8a0e23aaf5722b6d0d9dcc8af12f9c5bbbac27",
-    fullHost: "https://api.trongrid.io",
+    // fullHost: "https://api.trongrid.io",
+    fullHost: "https://api.shasta.trongrid.io",
     trongrid_key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
   },
   trongrid: {
@@ -38,7 +39,7 @@ if (env === "test") {
   };
 }
 
-export const account = {
+const account = {
   bsc: {
     address: "0x2a28f144555131EeAd6D25F024eD872553609EDC",
     privateKey:
@@ -51,7 +52,7 @@ export const account = {
   },
 };
 
-export const testConfig = {
+const testConfig = {
   bsc: {
     rpc: "https://bsc.getblock.io/a785e1f6-78b5-4771-a0d6-942d2fa34737/testnet/",
     wss: "wss://bsc.getblock.io/a785e1f6-78b5-4771-a0d6-942d2fa34737/testnet/",
@@ -63,12 +64,12 @@ export const testConfig = {
     rpc: "https://api.trongrid.io",
     key: "5a54bed3-7d2f-40a6-9741-d6d3605f4c7e",
     ...account.trx,
-    token: "",
+    token: "TG3XXyExBkPp9nzdajDZsozEu4BkaSJozs",
     bridge: "",
   },
 };
 
-export const prodConfig = {
+const prodConfig = {
   bsc: {
     wss: "wss://bsc.getblock.io/a785e1f6-78b5-4771-a0d6-942d2fa34737/mainnet/",
     rpc: "https://bsc.getblock.io/a785e1f6-78b5-4771-a0d6-942d2fa34737/mainnet/",
@@ -76,7 +77,20 @@ export const prodConfig = {
     token: "",
     bridge: "",
   },
-  trx: { ...testConfig.trx, token: "", bridge: "" },
+  trx: {
+    ...testConfig.trx,
+    token: "",
+    bridge: "",
+    rpc: "https://api.shasta.trongrid.io",
+  },
 };
 
-export default Object.assign(Config, devConfig);
+module.exports = {
+  account,
+  testConfig,
+  prodConfig,
+  Config,
+  devConfig,
+};
+
+// export default Object.assign(Config, devConfig);

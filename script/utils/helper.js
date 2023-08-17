@@ -1,6 +1,6 @@
-import TronWeb from "tronweb";
-import bigNumber from "bignumber.js";
-import Config from "../config";
+const TronWeb = require("tronweb");
+const bigNumber = require("bignumber.js");
+const { Config } = require("../config.js");
 
 const chain = Config.chain;
 
@@ -19,25 +19,35 @@ bigNumber.prototype._toHex = function () {
   return `0x${this.toString(16)}`;
 };
 
-export const toBigNumber = tronWeb.toBigNumber;
+const toBigNumber = tronWeb.toBigNumber;
 
-// export const BigNumber = tronWeb.BigNumber;
-export const BigNumber = bigNumber;
+//  const BigNumber = tronWeb.BigNumber;
+const BigNumber = bigNumber;
 
-export const toDecimal = tronWeb.toDecimal;
+const toDecimal = tronWeb.toDecimal;
 
-export const getTrxBalance = (address) => {
+const getTrxBalance = (address) => {
   return tronWeb.trx.getBalance(address);
 };
 
-export const fromHex = (hexString) => {
+const fromHex = (hexString) => {
   return tronWeb.address.fromHex(hexString.replace("/^0x/", "41"));
 };
 
-export const addressToHex = (addr) => {
+const addressToHex = (addr) => {
   return tronWeb.address.toHex(addr);
 };
 
-export const isAddress = (address) => {
+const isAddress = (address) => {
   return tronWeb.isAddress(address);
+};
+
+module.exports = {
+  toBigNumber,
+  BigNumber,
+  toDecimal,
+  getTrxBalance,
+  fromHex,
+  addressToHex,
+  isAddress,
 };
