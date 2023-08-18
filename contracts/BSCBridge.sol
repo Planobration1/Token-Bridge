@@ -214,8 +214,9 @@ contract Bridge is IBridgeBase {
     /// @inheritdoc IBridgeBase
     function addLiquidity(uint256 amount) external override onlyBridgeAdmin {
         require(amount > 0, "Bridge: amount must be greater than 0");
+        uint256 transferrableAmount = calculateBurnFee(amount);
         _token.safeTransferFrom(msg.sender, address(this), amount);
-        bridgeLiquidity += amount;
+        bridgeLiquidity += transferrableAmount;
     }
 
     /// @inheritdoc IBridgeBase
@@ -223,6 +224,10 @@ contract Bridge is IBridgeBase {
         require(
             bridgeLiquidity >= amount,
             "Bridge: insufficient bridge liquidity"
+        );
+        require(
+            amount <= bridgeBalance(),
+            "Bridge: Insufficient funds in bridge"
         );
         bridgeLiquidity -= amount;
         _token.safeTransfer(msg.sender, amount);
