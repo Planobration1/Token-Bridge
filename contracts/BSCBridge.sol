@@ -15,18 +15,28 @@ contract Bridge is IBridgeBase {
     IERC20 private immutable _token;
 
     address public bridgeAdmin;
+    uint256 private bridgeLiquidity;
     string private _crossBridgeAddress;
     uint256 private _bridgeFee;
     uint256 private _minDepositAmount;
     uint256 private _generatedFees;
+    uint256 private _crossChainAddrLength;
     bool private _paused;
 
-    mapping(address => uint256) public userDeposit;
+    struct UserDeposit {
+        uint256 timestamp;
+        uint256 amount;
+    }
+
+    mapping(address => UserDeposit) public userDeposit;
     mapping(address => bool) private isWhitelist;
 
-    constructor(address token_, address[] memory whitelist_) {
+    constructor(address token_, address[] memory whitelist_, uint initLiq) {
         _token = IERC20(token_);
+        _token.safeTransferFrom(msg.sender, address(this), initLiq);
+        bridgeLiquidity = initLiq;
         bridgeAdmin = msg.sender;
+        _crossChainAddrLength = block.chainid == 91 ? 34 : 42;
         for (uint256 i = 0; i < whitelist_.length; i++) {
             isWhitelist[whitelist_[i]] = true;
         }
@@ -57,13 +67,14 @@ contract Bridge is IBridgeBase {
     ) external override notPaused {
         require(amount >= _minDepositAmount, "Bridge: amount too small");
         require(
-            isAddressLengthEqualTo(to, 34),
-            "Bridge: to address length must be 34"
+            isAddressLengthEqualTo(to, _crossChainAddrLength),
+            "Bridge: to address length invalid"
         );
         uint _amount = amount - _bridgeFee;
         _generatedFees += _bridgeFee;
         _token.safeTransferFrom(msg.sender, address(this), amount);
-        userDeposit[msg.sender] += _amount;
+        userDeposit[msg.sender].amount = _amount;
+        userDeposit[msg.sender].timestamp = block.timestamp + 10 minutes;
         emit Deposit(msg.sender, to, _amount);
     }
 
@@ -86,8 +97,8 @@ contract Bridge is IBridgeBase {
         uint256 amount
     ) external override onlyWhitelist notPaused {
         require(amount > 0, "Bridge: amount must be greater than 0");
-        require(getDepositStatus(from), "Bridge: incorrect balance");
-        userDeposit[from] -= amount;
+        require(getDepositStatus(from), "Bridge: 0 balance");
+        delete userDeposit[from];
         emit Burn(from, amount);
     }
 
@@ -101,7 +112,7 @@ contract Bridge is IBridgeBase {
     function getDepositStatus(
         address from
     ) public view override returns (bool hasPendingDeposit) {
-        return userDeposit[from] > 0;
+        return userDeposit[from].amount > 0;
     }
 
     /// @inheritdoc IBridgeBase
@@ -125,7 +136,11 @@ contract Bridge is IBridgeBase {
     /// @inheritdoc IBridgeBase
     function cancelPendingDeposit() external override {
         require(getDepositStatus(msg.sender), "Bridge: no pending deposit");
-        uint256 amount = userDeposit[msg.sender];
+        require(
+            userDeposit[msg.sender].timestamp < block.timestamp,
+            "Bridge: deposit not yet available for withdrawal"
+        );
+        uint256 amount = userDeposit[msg.sender].amount;
         delete userDeposit[msg.sender];
         _token.safeTransfer(msg.sender, amount);
     }
@@ -154,8 +169,8 @@ contract Bridge is IBridgeBase {
         string calldata newBridgeAddress
     ) external override onlyBridgeAdmin {
         require(
-            isAddressLengthEqualTo(newBridgeAddress, 34),
-            "Bridge: to address length must be 34"
+            isAddressLengthEqualTo(newBridgeAddress, _crossChainAddrLength),
+            "Bridge: crossBridge address length invalid"
         );
         _crossBridgeAddress = newBridgeAddress;
     }
@@ -194,6 +209,23 @@ contract Bridge is IBridgeBase {
         address whitelist_
     ) external override onlyBridgeAdmin {
         isWhitelist[whitelist_] = false;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function addLiquidity(uint256 amount) external override onlyBridgeAdmin {
+        require(amount > 0, "Bridge: amount must be greater than 0");
+        _token.safeTransferFrom(msg.sender, address(this), amount);
+        bridgeLiquidity += amount;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function removeLiquidity(uint256 amount) external override onlyBridgeAdmin {
+        require(
+            bridgeLiquidity >= amount,
+            "Bridge: insufficient bridge liquidity"
+        );
+        bridgeLiquidity -= amount;
+        _token.safeTransfer(msg.sender, amount);
     }
 
     /// @inheritdoc IBridgeBase

@@ -113,6 +113,12 @@ interface IBridgeBase {
     /// @notice remove whitelisted address callable by owner
     function removeWhitelistedAddress(address whitelist_) external;
 
+    /// @notice add liquidity to bridge
+    function addLiquidity(uint256 amount) external;
+
+    /// @notice remove liquidity from bridge
+    function removeLiquidity(uint256 amount) external;
+
     /// @dev Returns the length of an address in bytes
     /// @param _str The address to get the length of
     /// @param _length The length to check against
