@@ -31,10 +31,8 @@ contract Bridge is IBridgeBase {
     mapping(address => UserDeposit) public userDeposit;
     mapping(address => bool) private isWhitelist;
 
-    constructor(address token_, address[] memory whitelist_, uint initLiq) {
+    constructor(address token_, address[] memory whitelist_) {
         _token = IERC20(token_);
-        _token.safeTransferFrom(msg.sender, address(this), initLiq);
-        bridgeLiquidity = initLiq;
         bridgeAdmin = msg.sender;
         _crossChainAddrLength = block.chainid == 91 ? 34 : 42;
         for (uint256 i = 0; i < whitelist_.length; i++) {
