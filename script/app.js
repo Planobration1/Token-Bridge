@@ -3,6 +3,8 @@ const { TrcToBsc, BscToTrc } = require("./bridge.js");
 const { testConfig } = require("./config.js");
 const { tronWeb } = require("./utils/index.js");
 
+const processedIds = new Set();
+
 async function main() {
   console.log("Script start");
   const BSC = bscContract();
@@ -26,9 +28,13 @@ async function main() {
         blockNumber: block,
       });
       for (let event of events) {
-        const { from, to, value } = event.result;
-        console.log(from, to, value, "Tron Handler");
-        await TrcToBsc(from, to, value.toString());
+        const { result, transaction } = event;
+        if (!processedIds.has(transaction)) {
+          const { from, to, value } = result;
+          console.log(from, to, value, "Tron Handler");
+          await TrcToBsc(from, to, value.toString());
+          processedIds.add(transaction);
+        }
       }
     } catch (error) {
       console.log(error);
