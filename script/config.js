@@ -40,7 +40,7 @@ const testConfig = {
     key: TRONGRID_API_KEY,
     ...account.trx,
     token: "TQJ7w9YDWNKSPu78LZ2c9T8S9rvjugszmG",
-    bridge: "TXKii6JShvF1GQjWikfSvgEoDVobaaNFpF",
+    bridge: "TE7dXopHdcQeMiEmSESRX4BBpvBBFfjbDc",
   },
 };
 
