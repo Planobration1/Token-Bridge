@@ -127,4 +127,9 @@ interface IBridgeBase {
         string memory _str,
         uint _length
     ) external pure returns (bool);
+
+    /// @notice calculate burn fee percentage and return the amount to be transferred
+    /// @param amount The amount to be transferred
+    /// @return uint256 The amount to be transferred after fee deduction
+    function calculateBurnFee(uint256 amount) external view returns (uint256);
 }

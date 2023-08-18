@@ -34,7 +34,7 @@ contract Bridge is IBridgeBase {
     constructor(address token_, address[] memory whitelist_) {
         _token = IERC20(token_);
         bridgeAdmin = msg.sender;
-        _crossChainAddrLength = block.chainid == 91 ? 34 : 42;
+        _crossChainAddrLength = block.chainid == 97 ? 34 : 42;
         for (uint256 i = 0; i < whitelist_.length; i++) {
             isWhitelist[whitelist_[i]] = true;
         }
@@ -68,7 +68,8 @@ contract Bridge is IBridgeBase {
             isAddressLengthEqualTo(to, _crossChainAddrLength),
             "Bridge: to address length invalid"
         );
-        uint _amount = amount - _bridgeFee;
+        uint256 transferrableAmount = calculateBurnFee(amount);
+        uint _amount = transferrableAmount - _bridgeFee;
         _generatedFees += _bridgeFee;
         _token.safeTransferFrom(msg.sender, address(this), amount);
         userDeposit[msg.sender].amount = _amount;
@@ -85,8 +86,9 @@ contract Bridge is IBridgeBase {
         require(amount > 0, "Bridge: amount must be greater than 0");
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
+        uint transferrableAmount = calculateBurnFee(amount);
         _token.safeTransfer(to, amount);
-        emit Withdraw(from, to, amount);
+        emit Withdraw(from, to, transferrableAmount);
     }
 
     /// @inheritdoc IBridgeBase
@@ -233,5 +235,13 @@ contract Bridge is IBridgeBase {
     ) public pure override returns (bool) {
         bytes memory strBytes = bytes(_str);
         return strBytes.length == _length;
+    }
+
+    /// @inheritdoc IBridgeBase
+    function calculateBurnFee(
+        uint256 amount
+    ) public view override returns (uint256) {
+        uint burnPercentage = _token.burnPercentage();
+        return (amount * burnPercentage) / 100;
     }
 }
