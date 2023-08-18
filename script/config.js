@@ -31,16 +31,16 @@ const testConfig = {
     rpc: `${BSC_RPC}/testnet`,
     wss: `${BSC_WSS}/testnet`,
     ...account.bsc,
-    token: "0x26607c5440f2b33c5c5355d15Ed766e9127D4878",
-    bridge: "0xa3Bc240484fA01332F68BcdE7050c15f8Bf73270",
+    token: "0x8178ae31580a2C2B1F888E4Ed003FAb0ccF3BdC7",
+    bridge: "0xfaE9aE60f207E7dA4099858C5039713AabD1b773",
   },
   trx: {
     rpc: "https://api.trongrid.io",
     wss: "wss://api.trongrid.io",
     key: TRONGRID_API_KEY,
     ...account.trx,
-    token: "THfvs3htgGDbUXT1bKgbyncUy2rdxdDbu1",
-    bridge: "TGHrCcF13UbkNHMqKUgTUeitp85pSqFRim",
+    token: "TQJ7w9YDWNKSPu78LZ2c9T8S9rvjugszmG",
+    bridge: "TXKii6JShvF1GQjWikfSvgEoDVobaaNFpF",
   },
 };
 
