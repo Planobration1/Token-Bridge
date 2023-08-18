@@ -32,7 +32,7 @@ const testConfig = {
     wss: `${BSC_WSS}/testnet`,
     ...account.bsc,
     token: "0x8178ae31580a2C2B1F888E4Ed003FAb0ccF3BdC7",
-    bridge: "0xfaE9aE60f207E7dA4099858C5039713AabD1b773",
+    bridge: "0xab75c23ac62303056d9f03193c3261f1f9f4161b",
   },
   trx: {
     rpc: "https://api.trongrid.io",
