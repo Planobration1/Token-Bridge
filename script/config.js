@@ -32,7 +32,7 @@ const testConfig = {
     wss: `${BSC_WSS}/testnet`,
     ...account.bsc,
     token: "0x8178ae31580a2C2B1F888E4Ed003FAb0ccF3BdC7",
-    bridge: "0xab75c23ac62303056d9f03193c3261f1f9f4161b",
+    bridge: "0xa7d30038D5fb1E7afFA1bDb046D286FF4E07EC4C",
   },
   trx: {
     rpc: "https://api.trongrid.io",
@@ -40,7 +40,7 @@ const testConfig = {
     key: TRONGRID_API_KEY,
     ...account.trx,
     token: "TQJ7w9YDWNKSPu78LZ2c9T8S9rvjugszmG",
-    bridge: "TE7dXopHdcQeMiEmSESRX4BBpvBBFfjbDc",
+    bridge: "TRnRfjW9fzUuJJNW43vimhQ2bVJMUkR25R",
   },
 };
 
