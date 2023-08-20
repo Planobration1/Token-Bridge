@@ -69,12 +69,14 @@ contract Bridge is IBridgeBase {
             "Bridge: to address length invalid"
         );
         uint256 transferrableAmount = calculateBurnFee(amount);
-        uint _amount = transferrableAmount - _bridgeFee;
-        _generatedFees += _bridgeFee;
         _token.safeTransferFrom(msg.sender, address(this), amount);
-        userDeposit[msg.sender].amount = _amount;
-        userDeposit[msg.sender].timestamp = block.timestamp + 10 minutes;
-        emit Deposit(msg.sender, to, _amount);
+
+        UserDeposit storage userDep = userDeposit[msg.sender];
+        userDep.amount = transferrableAmount;
+        userDep.timestamp = block.timestamp + 10 minutes;
+
+        _generatedFees += _bridgeFee;
+        emit Deposit(msg.sender, to, transferrableAmount);
     }
 
     /// @inheritdoc IBridgeBase
@@ -87,7 +89,8 @@ contract Bridge is IBridgeBase {
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
         uint transferrableAmount = calculateBurnFee(amount);
-        _token.safeTransfer(to, amount);
+        uint _amount = transferrableAmount - _bridgeFee;
+        _token.safeTransfer(to, _amount);
         emit Withdraw(from, to, transferrableAmount);
     }
 
@@ -155,7 +158,6 @@ contract Bridge is IBridgeBase {
 
     /// @inheritdoc IBridgeBase
     function setBridgeFees(uint256 fee) external override onlyBridgeAdmin {
-        require(fee > 0, "Bridge: fee must be greater than 0");
         _bridgeFee = fee;
     }
 
@@ -201,6 +203,14 @@ contract Bridge is IBridgeBase {
     function addWhitelistedAddress(
         address whitelist_
     ) external override onlyBridgeAdmin {
+        require(
+            whitelist_ != address(0),
+            "Bridge: new whitelist address is the zero address"
+        );
+        require(
+            !isWhitelist[whitelist_],
+            "Bridge: address already whitelisted"
+        );
         isWhitelist[whitelist_] = true;
     }
 
@@ -208,6 +218,7 @@ contract Bridge is IBridgeBase {
     function removeWhitelistedAddress(
         address whitelist_
     ) external override onlyBridgeAdmin {
+        require(isWhitelist[whitelist_], "Bridge: address not whitelisted");
         isWhitelist[whitelist_] = false;
     }
 
@@ -234,19 +245,34 @@ contract Bridge is IBridgeBase {
     }
 
     /// @inheritdoc IBridgeBase
+    function getBridgeLiquidityAndFees()
+        external
+        view
+        override
+        onlyBridgeAdmin
+        returns (uint256, uint256)
+    {
+        return (bridgeLiquidity, _generatedFees);
+    }
+
+    /// @dev Returns the length of an address in bytes
+    /// @param _str The address to get the length of
+    /// @param _length The length to check against
+    /// @return boolean value too confirm the address length
     function isAddressLengthEqualTo(
         string memory _str,
         uint _length
-    ) public pure override returns (bool) {
+    ) private pure returns (bool) {
         bytes memory strBytes = bytes(_str);
         return strBytes.length == _length;
     }
 
-    /// @inheritdoc IBridgeBase
-    function calculateBurnFee(
-        uint256 amount
-    ) public view override returns (uint256) {
+    /// @notice calculate burn fee percentage and return the amount transferrable
+    /// @param amount The initial amount to be transferred
+    /// @return uint256 The amount transferrable after fee deduction
+    function calculateBurnFee(uint256 amount) private view returns (uint256) {
         uint burnPercentage = _token.burnPercentage();
-        return (amount * burnPercentage) / 100;
+        uint burnAmount = (amount * burnPercentage) / 100;
+        return amount - burnAmount;
     }
 }

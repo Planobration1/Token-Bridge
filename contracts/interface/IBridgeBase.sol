@@ -119,17 +119,9 @@ interface IBridgeBase {
     /// @notice remove liquidity from bridge
     function removeLiquidity(uint256 amount) external;
 
-    /// @dev Returns the length of an address in bytes
-    /// @param _str The address to get the length of
-    /// @param _length The length to check against
-    /// @return boolean value too confirm the address length
-    function isAddressLengthEqualTo(
-        string memory _str,
-        uint _length
-    ) external pure returns (bool);
-
-    /// @notice calculate burn fee percentage and return the amount to be transferred
-    /// @param amount The amount to be transferred
-    /// @return uint256 The amount to be transferred after fee deduction
-    function calculateBurnFee(uint256 amount) external view returns (uint256);
+    /// @notice get bridge liquidity and generated fees
+    function getBridgeLiquidityAndFees()
+        external
+        view
+        returns (uint256, uint256);
 }
