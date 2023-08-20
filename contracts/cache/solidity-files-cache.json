@@ -1,0 +1,151 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\HP\\Documents\\GitHub\\External\\Token-Bridge\\contracts\\contracts\\BSCBridge.sol": {
+      "lastModificationDate": 1692539415186,
+      "contentHash": "ba6a2e5dc24c54b2fd4fe69d4df2ca3b",
+      "sourceName": "contracts/BSCBridge.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../interface/IBridgeBase.sol",
+        "../interface/IERC20.sol",
+        "../interface/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Bridge"
+      ]
+    },
+    "C:\\Users\\HP\\Documents\\GitHub\\External\\Token-Bridge\\contracts\\interface\\IBridgeBase.sol": {
+      "lastModificationDate": 1692532095644,
+      "contentHash": "1c93327091f39d90d24d9f3d8f747ca2",
+      "sourceName": "interface/IBridgeBase.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IBridgeBase"
+      ]
+    },
+    "C:\\Users\\HP\\Documents\\GitHub\\External\\Token-Bridge\\contracts\\interface\\IERC20.sol": {
+      "lastModificationDate": 1692395570709,
+      "contentHash": "df923b69558b0537ef694c6981b3c1db",
+      "sourceName": "interface/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
+      ]
+    },
+    "C:\\Users\\HP\\Documents\\GitHub\\External\\Token-Bridge\\contracts\\interface\\SafeERC20.sol": {
+      "lastModificationDate": 1692114744564,
+      "contentHash": "2863b3f8ca3ccb321ed4877e92857601",
+      "sourceName": "interface/SafeERC20.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "GPv2SafeERC20"
+      ]
+    }
+  }
+}

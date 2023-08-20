@@ -6,9 +6,9 @@ pragma solidity ^0.8.0;
 /// @notice This smart contract collects and locks user's token deposit, and emits an event to mint the same amount of token on the cross chain.
 /// @dev Inherits from the IBridgeBase interface.
 
-import {IBridgeBase} from "./interface/IBridgeBase.sol";
-import {IERC20} from "./interface/IERC20.sol";
-import {GPv2SafeERC20} from "./interface/SafeERC20.sol";
+import {IBridgeBase} from "../interface/IBridgeBase.sol";
+import {IERC20} from "../interface/IERC20.sol";
+import {GPv2SafeERC20} from "../interface/SafeERC20.sol";
 
 contract Bridge is IBridgeBase {
     using GPv2SafeERC20 for IERC20;
@@ -43,7 +43,7 @@ contract Bridge is IBridgeBase {
         bridgeAdmin = msg.sender;
         _crossChainAddrLength = block.chainid == 97 ? 34 : 42;
         isWhitelist[whitelist_] = BucketCapacity(
-            100000 ether,
+            100000 * (10 ** 18),
             0,
             block.timestamp
         );
