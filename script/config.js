@@ -29,10 +29,11 @@ const account = {
 const testConfig = {
   bsc: {
     rpc: `${BSC_RPC}/testnet`,
-    wss: `${BSC_WSS}/testnet`,
+    // wss: `${BSC_WSS}/testnet`,
+    wss: "wss://misty-little-mansion.bsc-testnet.discover.quiknode.pro/57282b909cad49cafce180c149def958a6f985ea/",
     ...account.bsc,
     token: "0x8178ae31580a2C2B1F888E4Ed003FAb0ccF3BdC7",
-    bridge: "0xa7d30038D5fb1E7afFA1bDb046D286FF4E07EC4C",
+    bridge: "0x2EfAbFBa5D80cf0e99FEB1aDEAD129eD6d2AD003",
   },
   trx: {
     rpc: "https://api.trongrid.io",
@@ -40,7 +41,7 @@ const testConfig = {
     key: TRONGRID_API_KEY,
     ...account.trx,
     token: "TQJ7w9YDWNKSPu78LZ2c9T8S9rvjugszmG",
-    bridge: "TRnRfjW9fzUuJJNW43vimhQ2bVJMUkR25R",
+    bridge: "TNsqxuyvhW8UNPkz894kgNqqvUcE4uE4Fx",
   },
 };
 

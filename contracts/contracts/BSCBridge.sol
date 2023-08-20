@@ -95,10 +95,6 @@ contract Bridge is IBridgeBase {
         address to,
         uint256 amount
     ) external override onlyWhitelist notPaused {
-        require(
-            isAddressLengthEqualTo(from, _crossChainAddrLength),
-            "Bridge: from address length invalid"
-        );
         require(amount > 0, "Bridge: amount must be greater than 0");
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
