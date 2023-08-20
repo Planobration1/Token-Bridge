@@ -113,6 +113,9 @@ interface IBridgeBase {
     /// @notice remove whitelisted address callable by owner
     function removeWhitelistedAddress(address whitelist_) external;
 
+    /// @notice set new bucket capacity for whitelist address callable by owner
+    function setBucketCapacity(address whitelist_, uint256 capacity_) external;
+
     /// @notice add liquidity to bridge
     function addLiquidity(uint256 amount) external;
 
