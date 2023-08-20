@@ -49,12 +49,9 @@ contract Bridge is IBridgeBase {
         );
     }
 
-    modifier onlyWhitelist(uint amount) {
+    modifier onlyWhitelist() {
         BucketCapacity memory bucket = isWhitelist[msg.sender];
-        require(
-            bucket.maxBucketCapacity >= bucket.bucketLevel + amount,
-            "Bridge: insufficient bucket capacity"
-        );
+        require(bucket.maxBucketCapacity >= 0, "Bridge: Not whitelist");
         _;
     }
 
@@ -97,7 +94,7 @@ contract Bridge is IBridgeBase {
         string calldata from,
         address to,
         uint256 amount
-    ) external override onlyWhitelist(amount) notPaused {
+    ) external override onlyWhitelist notPaused {
         require(
             isAddressLengthEqualTo(from, _crossChainAddrLength),
             "Bridge: from address length invalid"
@@ -106,7 +103,6 @@ contract Bridge is IBridgeBase {
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
         _updateBucket(amount);
-        isWhitelist[msg.sender].bucketLevel += amount;
         uint transferrableAmount = calculateBurnFee(amount);
         uint _amount = transferrableAmount - _bridgeFee;
         _token.safeTransfer(to, _amount);
@@ -117,7 +113,7 @@ contract Bridge is IBridgeBase {
     function burn(
         address from,
         uint256 amount
-    ) external override onlyWhitelist(amount) notPaused {
+    ) external override onlyWhitelist notPaused {
         require(amount > 0, "Bridge: amount must be greater than 0");
         require(getDepositStatus(from), "Bridge: 0 balance");
         delete userDeposit[from];
