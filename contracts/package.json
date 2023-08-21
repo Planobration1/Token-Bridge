@@ -8,7 +8,8 @@
     "compile": "npx hardhat compile",
     "flatten": "npx hardhat flatten contracts/BSCBridge.sol > flat.sol",
     "deploy_bsc": "npx hardhat run scripts/deploy_bsc.js --network bscTestnet",
-    "verify_bsc": "npx hardhat verify --network bscTestnet --contract ${CONTRACT_ADDRESS}"
+    "verify_bsc": "npx hardhat verify --network bscTestnet --contract ${CONTRACT_ADDRESS}",
+    "deploy_trc": "node scripts/deploy_trc.js"
   },
   "keywords": [],
   "author": "SteffQing",

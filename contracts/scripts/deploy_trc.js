@@ -1,5 +1,8 @@
 const { tronWeb } = require("../../script/utils/");
-const funcABIV2_4 = require("../artifacts/contracts/BSCBridge.sol/Bridge.json");
+const {
+  abi,
+  bytecode,
+} = require("../artifacts/contracts/BSCBridge.sol/Bridge.json");
 const { testConfig, prodConfig, devEnv } = require("../../script/config.js");
 const { appendFileSync } = require("fs");
 
@@ -7,27 +10,24 @@ async function main() {
   const config = devEnv ? testConfig.bsc : prodConfig.bsc;
   const _token = config.token;
   const _whitelist = config.address;
-  const transaction = await tronWeb.transactionBuilder.createSmartContract({
-    abi: funcABIV2_4.abi,
-    bytecode: funcABIV2_4.bytecode,
+  const parameters = [_token, _whitelist];
+  const contract = await tronWeb.contract().new({
+    abi,
+    bytecode,
+    parameters,
   });
-  await tronWeb.trx.sendRawTransaction(await tronWeb.trx.sign(transaction));
-  while (true) {
-    const tx = await tronWeb.trx.getTransaction(transaction.txID);
-    if (Object.keys(tx).length === 0) {
-      await new Promise((r) => setTimeout(r, 3000));
-      continue;
-    } else {
-      break;
-    }
-  }
+  const bridge = tronWeb.address.fromHex(contract.address);
   console.log(`
-  TRC Bridge deployed to ${transaction.contract_address}
+  TRC Bridge deployed to ${bridge.address}
   `);
   appendFileSync(
     "../deployments.txt",
     `
-  TRC Bridge deployed to ${transaction.contract_address} \n
+  TRC Bridge deployed to ${bridge.address} \n
   `
   );
 }
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
