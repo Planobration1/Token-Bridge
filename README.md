@@ -3,6 +3,7 @@
 The project is divided into two folders: `contracts` and `script`.
 Create a .env file at the root directory of this repo and fill it with the variables naming from the .env.example
 Each script execution occurs at the child directory: contracts and script
+   - Install packages with `yarn install` or npm
 
 ## Smart Contracts Deployment
 
@@ -21,19 +22,21 @@ Each script execution occurs at the child directory: contracts and script
 
 ## Hosting and Running the Script
 
-1. **Testnet Deployment**:
+1. **Testnet Script Deployment**:
    - Update the config.js file with BSC and TRC bridge addresses.
+   - Set `devEnv` to `true` in the `config.js` file located in the `script` directory.
    - `npm run start` > Start the script
-   - Import `prodConfig` instead of `testConfig` in the following files: `bridge.js`, `contracts.js`, and `app.js`.
-   - Deploy the script on Railway with the same configurations.
+   - Deploy the script on Railway.
+      - Create a new Railway project.
+      - In the settings > Set root directory to `script` and the command to `npm run start` or `node app.js`.
+      - In the variables > Set the environment variables in Railway.
 
-2. **Main Script Execution**:
+2. **Mainnet Script Execution**:
    - The main script logic is in `app.js`.
-   - Install packages with `yarn install` or npm
    - Set `devEnv` to `false` in the `config.js` file located in the `script` directory.
    - Run the script using the command `node app.js`.
    - Confirm that the script executes as expected.
 
-3. **Main Script Execution**:
+3. **Frontend Script Execution**:
    - Update the contract address in the frontend `consts.js` file.
    - Also set `const isTestNet = false`
