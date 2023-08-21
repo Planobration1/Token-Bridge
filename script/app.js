@@ -10,6 +10,7 @@ async function main() {
   const BSC = bscContract();
   const filter = BSC.filters["Deposit"]();
   BSC.on(filter, async (event) => {
+    let txHash = event.log.transactionHash;
     const [from, to, value] = event.args;
     console.log(from, to, value, "BSC Handler");
     await BscToTrc(from, to, value.toString());
