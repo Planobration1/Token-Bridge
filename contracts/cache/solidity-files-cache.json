@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\HP\\Documents\\GitHub\\External\\Token-Bridge\\contracts\\contracts\\BSCBridge.sol": {
-      "lastModificationDate": 1692544277677,
-      "contentHash": "39214ea9d80effd5487fa1d14eaa5062",
+      "lastModificationDate": 1692619332923,
+      "contentHash": "41994f2a0aaf9da3e16616ca37138c72",
       "sourceName": "contracts/BSCBridge.sol",
       "solcConfig": {
         "version": "0.8.0",

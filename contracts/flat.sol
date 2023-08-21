@@ -444,6 +444,7 @@ contract Bridge is IBridgeBase {
             isAddressLengthEqualTo(to, _crossChainAddrLength),
             "Bridge: to address length invalid"
         );
+        require(getDepositStatus(msg.sender), "Bridge: cancelPendingDeposit");
         uint256 transferrableAmount = calculateBurnFee(amount);
         _token.safeTransferFrom(msg.sender, address(this), amount);
 
@@ -465,8 +466,8 @@ contract Bridge is IBridgeBase {
         uint balance = bridgeBalance();
         require(balance >= amount, "Bridge: insufficient balance");
         _updateBucket(amount);
-        uint transferrableAmount = calculateBurnFee(amount);
-        uint _amount = transferrableAmount - _bridgeFee;
+        uint _amount = amount - _bridgeFee;
+        uint transferrableAmount = calculateBurnFee(_amount);
         _token.safeTransfer(to, _amount);
         emit Withdraw(from, to, transferrableAmount);
     }
@@ -589,7 +590,7 @@ contract Bridge is IBridgeBase {
             "Bridge: address already whitelisted"
         );
         isWhitelist[whitelist_] = BucketCapacity(
-            100000 ether,
+            100000 * (10**18),
             0,
             block.timestamp
         );

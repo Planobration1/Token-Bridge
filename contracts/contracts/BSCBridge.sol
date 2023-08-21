@@ -224,7 +224,7 @@ contract Bridge is IBridgeBase {
             "Bridge: address already whitelisted"
         );
         isWhitelist[whitelist_] = BucketCapacity(
-            100000 ether,
+            100000 * (10**18),
             0,
             block.timestamp
         );
