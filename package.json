@@ -1,0 +1,17 @@
+{
+  "name": "token-bridge",
+  "version": "1.0.0",
+  "description": "The project is divided into two folders: `contracts` and `script`.",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ethers": "^6.7.1",
+    "tronweb": "^5.3.0"
+  }
+}

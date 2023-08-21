@@ -1,12 +1,22 @@
 # Project Setup and Deployment Instructions
 
 The project is divided into two folders: `contracts` and `script`.
+Create a .env file at the root directory of this repo and fill it with the variables naming from the .env.example
+Each script execution occurs at the child directory: contracts and script
 
 ## Smart Contracts Deployment
 
 1. **Smart Contracts (BSC Testnet and TRX)**:
+   `cd contracts` *to get to the child directory*
    - Deploy the smart contracts (written in Hardhat) to both BSC and TRX networks.
-   - Update the values in the `account` of `script\config.js` with the relevant deployment details.
+   - `npm run compile` > Compile the contracts
+   - Deploy BSC Contract
+      - `npm run deploy_bsc` > You will get the contract address in the console and also in the `deployments.txt` file 
+      - `npm run verify_bsc` > Verify the contract on BSCScan
+   - Deploy TRX Contract
+      - `npm run deploy_trc` > You will get the contract address in the console and also in the `deployments.txt` file 
+   - Flatten the code
+      - `npm run flatten` > Flatten the code and saved in `flat.sol`
 
 ## Hosting and Running the Script
 

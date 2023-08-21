@@ -1,4 +1,6 @@
-require("dotenv").config();
+// require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
 const { TRC_PRIVATE_KEY, BSC_PRIVATE_KEY, TRONGRID_API_KEY, BSC_RPC, BSC_WSS } =
   process.env;
@@ -66,4 +68,5 @@ module.exports = {
   testConfig,
   prodConfig,
   Config,
+  devEnv,
 };

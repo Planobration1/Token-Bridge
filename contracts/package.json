@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "npx hardhat compile",
+    "flatten": "npx hardhat flatten contracts/BSCBridge.sol > flat.sol",
+    "deploy_bsc": "npx hardhat run scripts/deploy_bsc.js --network bscTestnet",
+    "verify_bsc": "npx hardhat verify --network bscTestnet --contract ${CONTRACT_ADDRESS}"
   },
   "keywords": [],
-  "author": "",
+  "author": "SteffQing",
   "license": "ISC",
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "ethers": "^5.7.2"
+    "@nomiclabs/hardhat-ethers": "^2.2.3"
   }
 }
