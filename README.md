@@ -17,20 +17,20 @@ Each script execution occurs at the child directory: contracts and script
       - `npm run deploy_trc` > You will get the contract address in the console and also in the `deployments.txt` file 
    - Flatten the code
       - `npm run flatten` > Flatten the code and saved in `flat.sol`
+   - Flattened code can be used to verify the smart contracts on individual chains
 
 ## Hosting and Running the Script
 
 1. **Testnet Deployment**:
-   - Host the script (Railway or Digital Ocean). Start by deploying it on the testnet to confirm functionality.
-   - Run `cp script/.env.example script/.env` to generate the .env file in the scripts.
-   - Update the `.env` file with necessary private values. Replace placeholders with your own variables.
-   - Set `devEnv` to `false` in the `config.js` file located in the `script` directory.
+   - Update the config.js file with BSC and TRC bridge addresses.
+   - `npm run start` > Start the script
    - Import `prodConfig` instead of `testConfig` in the following files: `bridge.js`, `contracts.js`, and `app.js`.
    - Deploy the script on Railway with the same configurations.
 
 2. **Main Script Execution**:
    - The main script logic is in `app.js`.
    - Install packages with `yarn install` or npm
+   - Set `devEnv` to `false` in the `config.js` file located in the `script` directory.
    - Run the script using the command `node app.js`.
    - Confirm that the script executes as expected.
 

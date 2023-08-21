@@ -1,6 +1,6 @@
 const { bscContract } = require("./contracts.js");
 const { TrcToBsc, BscToTrc } = require("./bridge.js");
-const { testConfig } = require("./config.js");
+const { config } = require("./config.js");
 const { tronWeb } = require("./utils/index.js");
 
 const processedIds = new Set();
@@ -16,7 +16,7 @@ async function main() {
     await BscToTrc(from, to, value.toString());
   });
   let currentBlock = 0;
-  const contract = testConfig.trx.bridge;
+  const contract = config.trx.bridge;
   setInterval(async () => {
     try {
       const blockHex = await tronWeb.trx.getCurrentBlock();

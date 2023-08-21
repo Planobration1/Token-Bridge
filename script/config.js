@@ -63,10 +63,10 @@ const prodConfig = {
   },
 };
 
+const config = devEnv ? testConfig : prodConfig;
+
 module.exports = {
   account,
-  testConfig,
-  prodConfig,
   Config,
-  devEnv,
+  config,
 };

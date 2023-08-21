@@ -1,5 +1,5 @@
 const { bscContract, tronContract } = require("./contracts.js");
-const { testConfig } = require("./config.js");
+const { config } = require("./config.js");
 
 async function BscToTrc(from, to, value) {
   const trcBridge = await tronContract();
@@ -27,7 +27,7 @@ async function bridgeToTron(from, to, value) {
     { type: "uint256", value: value },
   ];
   const tx = await tronWeb.transactionBuilder.triggerSmartContract(
-    testConfig.trx.bridge,
+    config.trx.bridge,
     functionSelector,
     {},
     parameter

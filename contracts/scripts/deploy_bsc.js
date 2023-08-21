@@ -1,11 +1,10 @@
 const hre = require("hardhat");
-const { testConfig, prodConfig, devEnv } = require("../../script/config.js");
+const { config } = require("../../script/config.js");
 const { appendFileSync } = require("fs");
 
 async function main() {
-  const config = devEnv ? testConfig.bsc : prodConfig.bsc;
-  const _token = config.token;
-  const _whitelist = config.address;
+  const _token = config.bsc.token;
+  const _whitelist = config.bsc.address;
   const bridge = await hre.ethers.deployContract("Bridge", [
     _token,
     _whitelist,
