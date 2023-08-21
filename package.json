@@ -4,7 +4,8 @@
   "description": "The project is divided into two folders: `contracts` and `script`.",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node script/app.js"
   },
   "keywords": [],
   "author": "",
