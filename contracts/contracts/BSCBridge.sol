@@ -41,7 +41,7 @@ contract Bridge is IBridgeBase {
     constructor(address token_, address whitelist_) {
         _token = IERC20(token_);
         bridgeAdmin = msg.sender;
-        _crossChainAddrLength = block.chainid == 97 ? 34 : 42;
+        _crossChainAddrLength = block.chainid == 56 ? 34 : 42;
         isWhitelist[whitelist_] = BucketCapacity(
             100000 * (10 ** 18),
             0,
