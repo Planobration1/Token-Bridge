@@ -5,7 +5,7 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const { TRC_PRIVATE_KEY, BSC_PRIVATE_KEY, TRONGRID_API_KEY, BSC_RPC, BSC_WSS } =
   process.env;
 
-let devEnv = true;
+let devEnv = false;
 let fullHost = devEnv ? "https://nile.trongrid.io" : "https://api.trongrid.io";
 
 const Config = {
