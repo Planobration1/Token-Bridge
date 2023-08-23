@@ -52,14 +52,13 @@ const prodConfig = {
     wss: `${BSC_WSS}/mainnet`,
     rpc: `${BSC_RPC}/mainnet`,
     ...account.bsc,
-    token: "",
-    bridge: "",
+    token: "0x68Bc800Dd616911e1C6E7852e607c6e46ba81636",
+    bridge: "0xb21e8da99a2db296dc2655a7840fe4318d4f1cd5",
   },
   trx: {
     ...testConfig.trx,
-    token: "",
-    bridge: "",
-    rpc: "https://api.shasta.trongrid.io",
+    token: "TEnbqY7jSJZRtPjCW4HsdpxBt9yRKmFKPf",
+    bridge: "TTcGhjnuJjFg4kw4MZ6hskScGWphrUqmNP",
   },
 };
 
