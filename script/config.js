@@ -19,11 +19,11 @@ const Config = {
 
 const account = {
   bsc: {
-    address: "0x2a28f144555131EeAd6D25F024eD872553609EDC",
+    address: "0xF4900bd12C3D6650e10dd04b89233494eA14ef74",
     privateKey: BSC_PRIVATE_KEY,
   },
   trx: {
-    address: "TTdVBtmg3XojVd2vV29S56jcfQuHFxPzov",
+    address: "TQFHVkPYjX9omaLbJQyoysTWeWVgf16D2F",
     privateKey: TRC_PRIVATE_KEY,
   },
 };
