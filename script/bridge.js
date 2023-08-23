@@ -5,7 +5,10 @@ async function BscToTrc(from, to, value) {
   const trcBridge = await tronContract();
   const bscBridge = bscContract();
   const trc_tx = await trcBridge.withdraw(from, to, value).send();
-  if (trc_tx) {
+  const txHash = trc_tx.transaction.txID;
+  const txInfo = await tronWeb.trx.getTransaction(txHash);
+  const isSuccess = txInfo.ret[0].contractRet === "SUCCESS";
+  if (isSuccess) {
     await bscBridge.burn(from, value);
   }
 }
@@ -14,7 +17,7 @@ async function TrcToBsc(from, to, value) {
   const bscBridge = bscContract();
   const bsc_tx = await bscBridge.withdraw(from, to, value);
   await bsc_tx.wait();
-  if (bsc_tx) {
+  if (bsc_tx.status === 1) {
     await trcBridge.burn(from, value).send();
   }
 }

@@ -49,7 +49,7 @@ const testConfig = {
 
 const prodConfig = {
   bsc: {
-    wss: `${BSC_WSS}/mainnet`,
+    wss: `${BSC_WSS}`,
     rpc: `${BSC_RPC}/mainnet`,
     ...account.bsc,
     token: "0x68Bc800Dd616911e1C6E7852e607c6e46ba81636",
