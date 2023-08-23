@@ -6,6 +6,7 @@ async function BscToTrc(from, to, value) {
     const trcBridge = await tronContract();
     const bscBridge = bscContract();
     await trcBridge.withdraw(from, to, value).send();
+    await new Promise((resolve) => setTimeout(resolve, 4000));
     await bscBridge.burn(from, value);
   } catch (error) {
     console.log(error);
