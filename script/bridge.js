@@ -2,23 +2,26 @@ const { bscContract, tronContract } = require("./contracts.js");
 const { config } = require("./config.js");
 
 async function BscToTrc(from, to, value) {
-  const trcBridge = await tronContract();
-  const bscBridge = bscContract();
-  const trc_tx = await trcBridge.withdraw(from, to, value).send();
-  const txHash = trc_tx.transaction.txID;
-  const txInfo = await tronWeb.trx.getTransaction(txHash);
-  const isSuccess = txInfo.ret[0].contractRet === "SUCCESS";
-  if (isSuccess) {
+  try {
+    const trcBridge = await tronContract();
+    const bscBridge = bscContract();
+    await trcBridge.withdraw(from, to, value).send();
     await bscBridge.burn(from, value);
+  } catch (error) {
+    console.log(error);
   }
 }
 async function TrcToBsc(from, to, value) {
-  const trcBridge = await tronContract();
-  const bscBridge = bscContract();
-  const bsc_tx = await bscBridge.withdraw(from, to, value);
-  await bsc_tx.wait();
-  if (bsc_tx.status === 1) {
-    await trcBridge.burn(from, value).send();
+  try {
+    const trcBridge = await tronContract();
+    const bscBridge = bscContract();
+    const bsc_tx = await bscBridge.withdraw(from, to, value);
+    await bsc_tx.wait();
+    if (bsc_tx) {
+      await trcBridge.burn(from, value).send();
+    }
+  } catch (e) {
+    console.log(e);
   }
 }
 
@@ -37,6 +40,7 @@ async function bridgeToTron(from, to, value) {
   );
   const signedTx = await tronWeb.trx.sign(tx.transaction);
   const result = await tronWeb.trx.sendRawTransaction(signedTx);
+  return result;
 }
 
 module.exports = {
