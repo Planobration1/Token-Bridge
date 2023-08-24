@@ -4,7 +4,7 @@ const { config } = require("./config.js");
 async function BscToTrc(from, to, value) {
   try {
     const trcBridge = await tronContract();
-    const bscBridge = bscContract();
+    const { bridgeContract: bscBridge } = bscContract();
     await trcBridge.withdraw(from, to, value).send();
     await new Promise((resolve) => setTimeout(resolve, 4000));
     await bscBridge.burn(from, value);
@@ -15,7 +15,7 @@ async function BscToTrc(from, to, value) {
 async function TrcToBsc(from, to, value) {
   try {
     const trcBridge = await tronContract();
-    const bscBridge = bscContract();
+    const { bridgeContract: bscBridge } = bscContract();
     const bsc_tx = await bscBridge.withdraw(from, to, value);
     await bsc_tx.wait();
     if (bsc_tx) {

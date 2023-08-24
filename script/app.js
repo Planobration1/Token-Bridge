@@ -15,10 +15,10 @@ async function main() {
     try {
       let txHash = event.log.transactionHash;
       if (!processedIds.has(txHash)) {
+        processedIds.add(txHash);
         const [from, to, value] = event.args;
         console.log(from, to, value, "BSC Handler");
         await BscToTrc(from, to, value.toString());
-        processedIds.add(txHash);
       }
     } catch (error) {
       console.error("Error processing event:", error);
@@ -42,10 +42,10 @@ async function main() {
       for (let event of events) {
         const { result, transaction } = event;
         if (!processedIds.has(transaction)) {
+          processedIds.add(transaction);
           const { from, to, value } = result;
           console.log(from, to, value, "Tron Handler");
           await TrcToBsc(from, to, value.toString());
-          processedIds.add(transaction);
         }
       }
     } catch (error) {
@@ -64,10 +64,10 @@ async function main() {
       for (let event of events) {
         let { transactionHash, args } = event;
         if (!processedIds.has(transactionHash)) {
+          processedIds.add(transactionHash);
           const [from, to, value] = args;
           console.log(from, to, value, "BSC Handler fallback");
           await BscToTrc(from, to, value.toString());
-          processedIds.add(transactionHash);
         }
       }
     } catch (error) {
