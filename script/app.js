@@ -10,11 +10,16 @@ async function main() {
   const BSC = bscContract();
   const filter = BSC.filters["Deposit"]();
   BSC.on(filter, async (event) => {
-    let txHash = event.log.transactionHash;
-    const [from, to, value] = event.args;
-    console.log(from, to, value, "BSC Handler");
-    await BscToTrc(from, to, value.toString());
+    try {
+      let txHash = event.log.transactionHash;
+      const [from, to, value] = event.args;
+      console.log(from, to, value, "BSC Handler");
+      await BscToTrc(from, to, value.toString());
+    } catch (error) {
+      console.error("Error processing event:", error);
+    }
   });
+
   let currentBlock = 0;
   const contract = config.trx.bridge;
   setInterval(async () => {

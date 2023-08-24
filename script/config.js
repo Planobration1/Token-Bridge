@@ -5,7 +5,7 @@ require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const { TRC_PRIVATE_KEY, BSC_PRIVATE_KEY, TRONGRID_API_KEY, BSC_RPC, BSC_WSS } =
   process.env;
 
-let devEnv = false;
+let devEnv = true;
 let fullHost = devEnv ? "https://nile.trongrid.io" : "https://api.trongrid.io";
 
 const Config = {
@@ -31,8 +31,7 @@ const account = {
 const testConfig = {
   bsc: {
     rpc: `${BSC_RPC}/testnet`,
-    // wss: `${BSC_WSS}/testnet`,
-    wss: "wss://misty-little-mansion.bsc-testnet.discover.quiknode.pro/57282b909cad49cafce180c149def958a6f985ea/",
+    wss: `${BSC_WSS}/testnet`,
     ...account.bsc,
     token: "0x8178ae31580a2C2B1F888E4Ed003FAb0ccF3BdC7",
     bridge: "0x2EfAbFBa5D80cf0e99FEB1aDEAD129eD6d2AD003",
@@ -49,7 +48,7 @@ const testConfig = {
 
 const prodConfig = {
   bsc: {
-    wss: `${BSC_WSS}`,
+    wss: `${BSC_WSS}/mainnet`,
     rpc: `${BSC_RPC}/mainnet`,
     ...account.bsc,
     token: "0x68Bc800Dd616911e1C6E7852e607c6e46ba81636",
