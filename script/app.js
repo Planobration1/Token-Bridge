@@ -7,14 +7,17 @@ const processedIds = new Set();
 
 async function main() {
   console.log("Script start");
-  const BSC = bscContract();
+  const { bridgeContract: BSC, provider } = bscContract();
   const filter = BSC.filters["Deposit"]();
   BSC.on(filter, async (event) => {
     try {
       let txHash = event.log.transactionHash;
-      const [from, to, value] = event.args;
-      console.log(from, to, value, "BSC Handler");
-      // await BscToTrc(from, to, value.toString());
+      if (!processedIds.has(txHash)) {
+        const [from, to, value] = event.args;
+        console.log(from, to, value, "BSC Handler");
+        // await BscToTrc(from, to, value.toString());
+        processedIds.add(txHash);
+      }
     } catch (error) {
       console.error("Error processing event:", error);
     }
@@ -40,6 +43,27 @@ async function main() {
           console.log(from, to, value, "Tron Handler");
           // await TrcToBsc(from, to, value.toString());
           // processedIds.add(transaction);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, 2000);
+
+  let bscBlock = 0;
+  setInterval(async () => {
+    try {
+      const block = await provider.getBlockNumber();
+      if (bscBlock == block) return;
+      bscBlock = block;
+      const events = await BSC.queryFilter(filter, block - 3);
+      for (let event of events) {
+        let { transactionHash, args } = event;
+        if (!processedIds.has(transactionHash)) {
+          const [from, to, value] = args;
+          console.log(from, to, value, "BSC Handler");
+          // await BscToTrc(from, to, value.toString());
+          processedIds.add(transactionHash);
         }
       }
     } catch (error) {
