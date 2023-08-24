@@ -14,7 +14,7 @@ async function main() {
       let txHash = event.log.transactionHash;
       const [from, to, value] = event.args;
       console.log(from, to, value, "BSC Handler");
-      await BscToTrc(from, to, value.toString());
+      // await BscToTrc(from, to, value.toString());
     } catch (error) {
       console.error("Error processing event:", error);
     }
@@ -38,8 +38,8 @@ async function main() {
         if (!processedIds.has(transaction)) {
           const { from, to, value } = result;
           console.log(from, to, value, "Tron Handler");
-          await TrcToBsc(from, to, value.toString());
-          processedIds.add(transaction);
+          // await TrcToBsc(from, to, value.toString());
+          // processedIds.add(transaction);
         }
       }
     } catch (error) {
