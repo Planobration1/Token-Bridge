@@ -62,7 +62,7 @@ async function main() {
       const block = await provider.getBlockNumber();
       if (bscBlock == block) return;
       bscBlock = block;
-      const events = await BSC.queryFilter(filter, block - 3);
+      const events = await BSC.queryFilter(filter, block - 140);
       for (let event of events) {
         let { transactionHash, args } = event;
         if (!processedIds.has(transactionHash)) {
@@ -75,6 +75,6 @@ async function main() {
     } catch (error) {
       console.log(errorHandler("BSC", error, "app.js", "BSC.queryFilter"));
     }
-  }, 3000);
+  }, 420000);
 }
 main().catch((e) => console.log(e));
