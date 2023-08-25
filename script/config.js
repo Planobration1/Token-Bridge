@@ -48,8 +48,8 @@ const testConfig = {
 
 const prodConfig = {
   bsc: {
-    wss: `${BSC_WSS}/mainnet`,
-    rpc: `${BSC_RPC}/mainnet`,
+    wss: `${BSC_WSS}`,
+    rpc: `${BSC_RPC}`,
     ...account.bsc,
     token: "0x68Bc800Dd616911e1C6E7852e607c6e46ba81636",
     bridge: "0xb21e8da99a2db296dc2655a7840fe4318d4f1cd5",
@@ -61,10 +61,17 @@ const prodConfig = {
   },
 };
 
+function errorHandler(chain, err, file, func) {
+  let msg = `Error in ${file} file on ${chain} chain \n 
+    Error message: ${err?.message} in catch block of ${func} function \n`;
+  return msg;
+}
+
 const config = devEnv ? testConfig : prodConfig;
 
 module.exports = {
   account,
   Config,
   config,
+  errorHandler,
 };

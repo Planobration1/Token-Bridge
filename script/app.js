@@ -1,6 +1,6 @@
 const { bscContract } = require("./contracts.js");
 const { TrcToBsc, BscToTrc } = require("./bridge.js");
-const { config } = require("./config.js");
+const { config, errorHandler } = require("./config.js");
 const { tronWeb } = require("./utils/index.js");
 
 const processedIds = new Set();
@@ -21,7 +21,7 @@ async function main() {
         await BscToTrc(from, to, value.toString());
       }
     } catch (error) {
-      console.error("Error processing event:", error);
+      console.error(errorHandler("BSC", error, "app.js", "BSC.on"));
     }
   });
 
@@ -49,7 +49,9 @@ async function main() {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log(
+        errorHandler("TRC", error, "app.js", "tronWeb.getEventResult")
+      );
     }
   }, 2000);
 
@@ -71,7 +73,7 @@ async function main() {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log(errorHandler("BSC", error, "app.js", "BSC.queryFilter"));
     }
   }, 3000);
 }

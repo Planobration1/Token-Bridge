@@ -1,5 +1,5 @@
 const { bscContract, tronContract } = require("./contracts.js");
-const { config } = require("./config.js");
+const { config, errorHandler } = require("./config.js");
 
 async function BscToTrc(from, to, value) {
   try {
@@ -9,7 +9,7 @@ async function BscToTrc(from, to, value) {
     await new Promise((resolve) => setTimeout(resolve, 4000));
     await bscBridge.burn(from, value);
   } catch (error) {
-    console.log(error);
+    console.log(errorHandler("BSC", error, "bridge.js", "BscToTrc"));
   }
 }
 async function TrcToBsc(from, to, value) {
@@ -22,7 +22,7 @@ async function TrcToBsc(from, to, value) {
       await trcBridge.burn(from, value).send();
     }
   } catch (e) {
-    console.log(e);
+    console.log(errorHandler("TRC", e, "bridge.js", "TrcToBsc"));
   }
 }
 
