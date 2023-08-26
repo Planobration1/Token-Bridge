@@ -56,13 +56,12 @@ async function main() {
   }, 2000);
 
   /// @dev fallback for bsc bridge handler
-  let bscBlock = 0;
+  let bscBlock = 31177464;
   setInterval(async () => {
     try {
       const block = await provider.getBlockNumber();
-      if (bscBlock == block) return;
+      const events = await BSC.queryFilter(filter, bscBlock, block);
       bscBlock = block;
-      const events = await BSC.queryFilter(filter, block - 140);
       for (let event of events) {
         let { transactionHash, args } = event;
         if (!processedIds.has(transactionHash)) {

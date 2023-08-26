@@ -9,17 +9,17 @@ const bridgeAbi = require("./abi/bridge.json");
 const { config, errorHandler } = require("./config.js");
 
 function bscContract() {
-  try {
-    const bsc = config.bsc;
-    const { bridge, privateKey, wss, rpc } = bsc;
-    const provider = new WebSocketProvider(wss);
-    const jsonProvider = new JsonRpcProvider(rpc);
-    const wallet = new Wallet(privateKey, provider);
-    const bridgeContract = new Contract(bridge, bridgeAbi, wallet);
-    return { bridgeContract, provider: jsonProvider };
-  } catch (error) {
-    console.error(errorHandler("BSC", error, "contracts.js", "bscContract"));
-  }
+  const bsc = config.bsc;
+  const { bridge, privateKey, wss, rpc } = bsc;
+  const provider = new WebSocketProvider(wss).on("error", (error) => {
+    console.error(errorHandler("BSC", error, "contracts.js", "WebSocket"));
+  });
+  const jsonProvider = new JsonRpcProvider(rpc).on("error", (error) => {
+    console.error(errorHandler("BSC", error, "contracts.js", "JsonRpc"));
+  });
+  const wallet = new Wallet(privateKey, provider);
+  const bridgeContract = new Contract(bridge, bridgeAbi, wallet);
+  return { bridgeContract, provider: jsonProvider };
 }
 async function tronContract() {
   try {
