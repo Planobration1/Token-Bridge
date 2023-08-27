@@ -2,11 +2,21 @@ const { bscContract } = require("./contracts.js");
 const { TrcToBsc, BscToTrc } = require("./bridge.js");
 const { config, errorHandler } = require("./config.js");
 const { tronWeb } = require("./utils/index.js");
+const { redisClient } = require("./redis.js");
 
-const processedIds = new Set();
-
+async function getBlockTimestamp() {
+  const { provider } = bscContract();
+  const blockHex = await tronWeb.trx.getCurrentBlock();
+  const _timestamp = blockHex.block_header.raw_data.timestamp;
+  const _bscblock = await provider.getBlockNumber();
+  return [_bscblock, _timestamp];
+}
 async function main() {
   console.log("Script start");
+  const sevenMinutes = 420000;
+
+  /// @dev get latest block number and timestamp for both chains
+  let [bscBlock, trcTimestamp] = await getBlockTimestamp();
 
   /// @dev bsc bridge handler
   const { bridgeContract: BSC, provider } = bscContract();
@@ -14,35 +24,33 @@ async function main() {
   BSC.on(filter, async (event) => {
     try {
       let txHash = event.log.transactionHash;
-      if (!processedIds.has(txHash)) {
-        processedIds.add(txHash);
-        const [from, to, value] = event.args;
-        console.log(from, to, value, "BSC Handler");
-        await BscToTrc(from, to, value.toString());
-      }
+      await redisClient("set", txHash);
+      const [from, to, value] = event.args;
+      console.log(from, to, value, "BSC Handler");
+      await BscToTrc(from, to, value.toString());
     } catch (error) {
       console.error(errorHandler("BSC", error, "app.js", "BSC.on"));
     }
   });
 
   /// @dev tron bridge handler
-  let currentBlock = 0;
   const contract = config.trx.bridge;
   setInterval(async () => {
     try {
       const blockHex = await tronWeb.trx.getCurrentBlock();
-      const block = blockHex.block_header.raw_data.number;
-      if (currentBlock == block) return;
-      currentBlock = block;
+      const _timestamp = blockHex.block_header.raw_data.timestamp;
       const events = await tronWeb.getEventResult(contract, {
         eventName: "Deposit",
         onlyConfirmed: true,
-        blockNumber: block,
+        sinceTimestamp: trcTimestamp,
+        sort: "block_timestamp",
       });
+      trcTimestamp = _timestamp;
       for (let event of events) {
         const { result, transaction } = event;
-        if (!processedIds.has(transaction)) {
-          processedIds.add(transaction);
+        let exists = await redisClient("get", transaction);
+        if (!exists) {
+          await redisClient("set", transaction);
           const { from, to, value } = result;
           console.log(from, to, value, "Tron Handler");
           await TrcToBsc(from, to, value.toString());
@@ -53,10 +61,9 @@ async function main() {
         errorHandler("TRC", error, "app.js", "tronWeb.getEventResult")
       );
     }
-  }, 2000);
+  }, sevenMinutes);
 
   /// @dev fallback for bsc bridge handler
-  let bscBlock = 31177464;
   setInterval(async () => {
     try {
       const block = await provider.getBlockNumber();
@@ -64,8 +71,9 @@ async function main() {
       bscBlock = block;
       for (let event of events) {
         let { transactionHash, args } = event;
-        if (!processedIds.has(transactionHash)) {
-          processedIds.add(transactionHash);
+        let exists = await redisClient("get", transactionHash);
+        if (!exists) {
+          await redisClient("set", transactionHash);
           const [from, to, value] = args;
           console.log(from, to, value, "BSC Handler fallback");
           await BscToTrc(from, to, value.toString());
@@ -74,6 +82,6 @@ async function main() {
     } catch (error) {
       console.log(errorHandler("BSC", error, "app.js", "BSC.queryFilter"));
     }
-  }, 420000);
+  }, sevenMinutes);
 }
 main().catch((e) => console.log(e));
