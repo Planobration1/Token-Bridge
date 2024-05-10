@@ -11,9 +11,9 @@ const { config, errorHandler } = require("./config.js");
 function bscContract() {
   const bsc = config.bsc;
   const { bridge, privateKey, wss, rpc } = bsc;
-  const provider = new WebSocketProvider(wss);
+  // const provider = new WebSocketProvider(wss);
   const jsonProvider = new JsonRpcProvider(rpc);
-  const wallet = new Wallet(privateKey, provider);
+  const wallet = new Wallet(privateKey, jsonProvider);
   const bridgeContract = new Contract(bridge, bridgeAbi, wallet);
   return { bridgeContract, provider: jsonProvider };
 }
