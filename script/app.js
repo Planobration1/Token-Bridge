@@ -62,17 +62,17 @@ async function main() {
   /// @dev bsc bridge handler websocket
   const { bridgeContract: BSC } = bscContract();
   const filter = BSC.filters["Deposit"]();
-  BSC.on(filter, async (event) => {
-    try {
-      let txHash = event.log.transactionHash;
-      await redisClient("set", txHash);
-      const [from, to, value] = event.args;
-      console.log(from, to, value, "BSC Handler");
-      await BscToTrc(from, to, value.toString());
-    } catch (error) {
-      console.error(errorHandler("BSC", error, "app.js", "BSC.on"));
-    }
-  });
+  // BSC.on(filter, async (event) => {
+  //   try {
+  //     let txHash = event.log.transactionHash;
+  //     await redisClient("set", txHash);
+  //     const [from, to, value] = event.args;
+  //     console.log(from, to, value, "BSC Handler");
+  //     await BscToTrc(from, to, value.toString());
+  //   } catch (error) {
+  //     console.error(errorHandler("BSC", error, "app.js", "BSC.on"));
+  //   }
+  // });
 
   /// @dev tron bridge handler
   const contract = config.trx.bridge;
